@@ -23,11 +23,14 @@ export const findOrCreateUserByGoogleId = async (profile: any) => {
 export const findOrCreateUserByFacebookId = async (profile: any) => {
   try {
     let user = await userModel.findOne({ facebookId: profile.id });
+
     if (!user) {
       user = await userModel.create({
         facebookId: profile.id,
         email: profile.emails ? profile.emails[0].value : undefined,
         name: profile.displayName,
+        image: profile.photos ? profile.photos[0].value : undefined,
+        provider: "facebook",
       });
     }
     return user;

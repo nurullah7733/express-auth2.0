@@ -79,7 +79,9 @@ passport.use(
       clientID: process.env.FACEBOOK_APP_ID as string,
       clientSecret: process.env.FACEBOOK_APP_SECRET as string,
       callbackURL: "/auth/facebook/callback",
+      profileFields: ["id", "displayName", "photos", "email"],
     },
+
     async (accessToken, refreshToken, profile, done) => {
       try {
         let user = await findOrCreateUserByFacebookId(profile);
@@ -103,8 +105,6 @@ passport.use(
           return done(null, false, { message: "User not found." });
         }
 
-        console.log(user.provider && user.provider !== "local");
-
         if (user.provider && user.provider !== "local") {
           // Inform the user they should use their provider's log in method
           return done(null, false, {
@@ -126,7 +126,6 @@ passport.use(
           return done(null, false, { message: "Incorrect password." });
         }
 
-        console.log(user, "user");
         return done(null, user);
       } catch (error) {
         return done(error);

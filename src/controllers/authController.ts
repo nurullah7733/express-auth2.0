@@ -23,8 +23,19 @@ export const googleAuthCallback = (req: Request, res: Response) => {
 };
 
 export const facebookAuthCallback = (req: Request, res: Response) => {
-  // Handle the response after Facebook auth completes
-  // Similar logic as the google callback
+  const token = generateToken(req.user);
+  res.cookie("token", token.token, {
+    httpOnly: true,
+    maxAge: 3600000,
+    secure: process.env.NODE_ENV === "production",
+  });
+
+  const userProfile = encodeURIComponent(JSON.stringify(req.user));
+  // Append user profile data as a parameter when redirecting
+  const frontendRedirectUrl = new URL(process.env.FRONTEND_DOMAIN as string);
+  frontendRedirectUrl.searchParams.append("profile", userProfile);
+
+  res.redirect(frontendRedirectUrl.toString());
 };
 
 // register
