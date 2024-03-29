@@ -1,8 +1,6 @@
 import userModel from "../../models/userModel";
 
 export const findOrCreateUserByGoogleId = async (profile: any) => {
-  console.log(profile, "profile");
-
   try {
     let user = await userModel.findOne({ googleId: profile.id });
     if (!user) {
